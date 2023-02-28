@@ -4,10 +4,17 @@ const sequelize = require('../config/connection.js');
 
 class Category extends Model {}
 
-Category.init(
-  {
+Category.init({
     // define columns
+    ategory_name: {
+      type: DataTypes.STRING,
+      allowNull:false,
+      unique:true,
+      validate:{
+          isAlpha:true
   },
+},
+},
   {
     sequelize,
     timestamps: false,
