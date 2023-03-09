@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const { Tag, Product, ProductTag } = require('../../models');
+const { associations } = require('../../models/Product');
 
 // The `/api/tags` endpoint
 
@@ -16,17 +17,17 @@ router.get('/', async (req, res) => {
   }
 });
 
-router.get('/:id', (req, res) => {
+router.get('/:id', async (req, res) => {
   // find a single tag by its `id`
   // be sure to include its associated Product data
   try {
-    const oneTag = Tag.findByPk(req.params.id, {
+    const oneTag = await Tag.findByPk(req.params.id, {
       includ: [Product]
     });
     if (oneTag) {
       return res.json(oneTag);
     } else {
-      return res.status(404).json({ msg: "no such record" });
+      return res.status(404).json({ msg: "no record" });
     }
   } catch (err) {
     console.log(err);
@@ -37,10 +38,10 @@ router.get('/:id', (req, res) => {
   }
 });
 
-router.post('/', (req, res) => {
+router.post('/', async (req, res) => {
   // create a new tag
   try {
-    const newTag = Tag.create({
+    const newTag = await Tag.create({
       tag_name: req.body.tag_name,
     });
     res.status(201).json(newTag);
@@ -53,10 +54,10 @@ router.post('/', (req, res) => {
   }
 });
 
-router.put('/:id', (req, res) => {
+router.put('/:id', async (req, res) => {
   // update a tag's name by its `id` value
   try {
-    const updateTag = Tag.update(
+    const updateTag = await Tag.update(
       {
         tag_name: req.body.tag_name,
       },
@@ -69,7 +70,7 @@ router.put('/:id', (req, res) => {
     if (updateTag[0]) {
       return res.json(updateTag);
     } else {
-      return res.status(404).json({ msg: "no such record" });
+      return res.status(404).json({ msg: "no record" });
     }
   } catch (err) {
     console.log(err);
@@ -80,10 +81,10 @@ router.put('/:id', (req, res) => {
   }
 });
 
-router.delete('/:id', (req, res) => {
+router.delete('/:id', async (req, res) => {
   // delete on tag by its `id` value
   try {
-    const deleteTag = Tag.destroy({
+    const deleteTag = await Tag.destroy({
       where: {
         id: req.params.id
       }
@@ -91,7 +92,7 @@ router.delete('/:id', (req, res) => {
     if (deleteTag) {
       return res.json(deleteTag);
     } else {
-      return res.status(404).json({ msg: "no such recrod" });
+      return res.status(404).json({ msg: "no recrod" });
     }
   } catch (err) {
     console.log(err);
